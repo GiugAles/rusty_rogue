@@ -1,7 +1,7 @@
 use crate::prelude::*;
 const NUM_TILES: usize = (SCREEN_WIDTH * SCREEN_HEIGHT) as usize;
 
-#[derive(Copy, Clone, PartialEq)]
+#[derive(Copy, Clone, PartialEq,Debug)]
 pub enum TileType {
     Wall,
     Floor,
@@ -96,8 +96,7 @@ mod tests {
     fn test_can_enter_tile() {
         let mut default_map = Map::new();
         let mut rng = rand::thread_rng();
-        println!("test_can_enter_tile");
-        for _ in 0..50 {
+        for _ in 0..50 { // abitrary number of tries
             let pos_x = rng.gen_range(0..SCREEN_WIDTH);
             let pos_y = rng.gen_range(0..SCREEN_HEIGHT);
             let idx = map_idx(pos_x, pos_y);
@@ -107,8 +106,18 @@ mod tests {
 
             default_map.tiles[idx] = TileType::Wall;
             assert!(!default_map.can_enter_tile(Point{x: pos_x, y: pos_y}));
-
         }
+    }
 
+    #[test]
+    fn test_try_idx() {
+        let default_map = Map::new();
+        for y in 0..SCREEN_HEIGHT {
+            for x in 0..SCREEN_WIDTH {
+                assert_eq!(default_map.try_idx(Point{x,y}), Some(map_idx(x, y)));
+            }
+        }
+        assert_eq!(default_map.try_idx(Point::new(SCREEN_WIDTH + 1, SCREEN_HEIGHT + 1 )), None);
+        assert_eq!(default_map.try_idx(Point::new(-1, -1)), None);
     }
 }

@@ -1,8 +1,6 @@
 use crate::prelude::*;
 const NUM_TILES: usize = (SCREEN_WIDTH * SCREEN_HEIGHT) as usize;
 
-use std::fmt;
-
 #[derive(Copy, Clone, PartialEq, Debug)]
 pub enum TileType {
     Wall,

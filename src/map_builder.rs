@@ -91,13 +91,43 @@ impl MapBuilder {
 mod tests {
     use super::*;
 
+    use std::fs::File;
+    use std::io::{BufRead, BufReader, Write};
+
+    #[allow(dead_code)]
+    fn dump_fixed_dungeon() {
+        let seed : u64 = 19820513;
+        let mut rng = RandomNumberGenerator::seeded(seed);
+        let test_map_builder = MapBuilder::new(&mut rng);
+        let mut file = File::create("./test/data/fixed_dungeon_layout.txt").unwrap();
+        for y in 0..SCREEN_HEIGHT {
+            for x in 0..SCREEN_WIDTH {
+                writeln!(&mut file, "{:?}", test_map_builder.map.tiles[map_idx(x, y)]).unwrap();
+            }
+        }
+    }
+
     #[test]
-    fn test_map_builder_new() {
-        let mut rng = RandomNumberGenerator::seeded(19820513);
+    fn test_map_builder_new()  {
+        let file = File::open("./test/data/fixed_dungeon_layout.txt").unwrap();
+        let reader = BufReader::new(file);
+        let mut fixed_dungeon_layout = Vec::new();
+        for line in reader.lines() {
+            fixed_dungeon_layout.push(line.unwrap())
+        }
+
+        let seed : u64 = 19820513;
+        let mut rng = RandomNumberGenerator::seeded(seed);
         let test_map_builder = MapBuilder::new(&mut rng);
         for y in 0..SCREEN_HEIGHT {
             for x in 0..SCREEN_WIDTH {
-                println!("{:?}", test_map_builder.map.tiles[map_idx(x, y)]);
+                if fixed_dungeon_layout[map_idx(x, y)] == "Wall" {
+                    assert_eq!(test_map_builder.map.tiles[map_idx(x, y)], TileType::Wall);
+                } else if fixed_dungeon_layout[map_idx(x, y)] == "Floor" {
+                    assert_eq!(test_map_builder.map.tiles[map_idx(x, y)], TileType::Floor);
+                } else {
+                    panic!("Unknown tile type in fixed_dungeon_layout.txt");
+                }
             }
         }
     }

@@ -4,7 +4,7 @@ use crate::prelude::*;
 #[read_component(Point)]
 #[read_component(Player)]
 #[read_component(Enemy)]
-pub fn collision(ecs: &mut SubWorld, commands: &mut CommandBuffer) {
+pub fn collision(ecs: &mut SubWorld, commands: &mut CommandBuffer, #[resource] monster_count: &mut usize) {
 
     let mut player_pos = Point::zero();
     let mut players = <&Point>::query()
@@ -18,6 +18,10 @@ pub fn collision(ecs: &mut SubWorld, commands: &mut CommandBuffer) {
         .filter(|( _ , pos)| **pos == player_pos)
         .for_each(|(entity, _)| {
             commands.remove(*entity);
+            *monster_count = *monster_count - 1;
         }
     );
+
+
+
 }

@@ -12,9 +12,7 @@ pub fn player_input(
 {
     if let Some(key) = key {
         let delta = match key {
-            report erratum • discuss
-                Managing Complexity with Systems • 115
-                VirtualKeyCode::Left => Point::new(-1, 0),
+            VirtualKeyCode::Left => Point::new(-1, 0),
             VirtualKeyCode::Right => Point::new(1, 0),
             VirtualKeyCode::Up => Point::new(0, -1),
             VirtualKeyCode::Down => Point::new(0, 1),
